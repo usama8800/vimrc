@@ -1,0 +1,9 @@
+autoload/*
+plugged/*
+colors/*
+x/*
+*~*
+.netrwhist
+*.swp
+sessions/*
+
