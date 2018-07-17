@@ -22,15 +22,21 @@ set wildignore+=*/bin/*
 " }}}
 
 
-" FILE BROWSING {{{
-let g:netrw_banner=0        " disable annoying banner
-" let g:netrw_browse_split=4  " open in prior window
-let g:netrw_altv=1          " open splits to the right
-let g:netrw_liststyle=3     " tree view
-let g:netrw_list_hide=netrw_gitignore#Hide()
-let g:netrw_list_hide.=',\(^\|\s\s\)\zs\.\S\+'
-" :edit <path> to use
-" <CR> to open dir
+" WINDOWS AND BROWSING {{{
+let g:netrw_banner=0
+let g:netrw_liststyle=0
+let g:netrw_list_hide=netrw_gitignore#Hide().'.*\.swp$'
+augroup CustomWindows
+	autocmd!
+	autocmd VimEnter * if expand("%") == "" && argc() == 0 && (v:servername =~ 'GVIM\d*' || v:servername == "") | e . | endif
+augroup END
+nnoremap <C-w><C-v> :vsplit .<cr>
+nnoremap <C-w><C-s> :split .<cr>
+set splitbelow
+set splitright
+nnoremap <C-w><C--> <C-w>_
+nnoremap <C-w><C-\> <C-w><bar>
+nnoremap <C-w><C-m> <C-w>_<C-w><bar>
 " }}}
 
 
@@ -40,14 +46,8 @@ Plug 'morhetz/gruvbox'
 Plug 'vim-airline/vim-airline'
 Plug 'chrisbra/Colorizer'
 Plug 'KabbAmine/vCoolor.vim'
-Plug 'mhinz/vim-startify'
 Plug 'tomtom/tcomment_vim'
 call plug#end()
-" }}}
-
-
-" PLUGIN-OPTIONS {{{
-let g:startify_bookmarks = [ {'p': '~\source\repos\Phonebook-v2\Phonebook-v2\src'} ]
 " }}}
 
 
@@ -97,7 +97,7 @@ let &showbreak='↳'
 " }}}
 
 
-" Vimscript file settings {{{
+" FOLD SETTINGS {{{
 augroup filetype_vim
 	autocmd!
 	autocmd FileType vim setlocal foldmethod=marker
@@ -147,9 +147,10 @@ augroup END
 
 " MISC {{{
 nnoremap / /\v
+nnoremap <C-s> :w<cr>
 " Keep curson in center, zz to change
 let &scrolloff=999
-nnoremap zz :let &scrolloff=999-&scrolloff<CR>
+nnoremap zz :let &scrolloff=999-&scrolloff<cr>
 " Change window with CTRL-[H,J,K,L]
 noremap <C-l> <C-w>l
 noremap <C-h> <C-w>h
