@@ -28,15 +28,52 @@ let g:netrw_liststyle=0
 let g:netrw_list_hide=netrw_gitignore#Hide().'.*\.swp$'
 augroup CustomWindows
 	autocmd!
-	autocmd VimEnter * if expand("%") == "" && argc() == 0 && (v:servername =~ 'GVIM\d*' || v:servername == "") | e . | endif
+	autocmd VimEnter *
+				\ if expand("%") == ""
+				\ 	&& getcwd() != 'C:\WINDOWS\system32'
+				\ 	&& argc() == 0 && (v:servername =~ 'GVIM\d*' || v:servername == "")
+				\ 	| echom getcwd()
+				\ 	| e .
+				\ | endif
+	autocmd VimEnter *
+				\ if getcwd() == 'C:\WINDOWS\system32'
+				\ && filereadable(expand("~/vimfiles/Sessions/LastSession.vim"))
+				\ 	| so ~/vimfiles/Sessions/LastSession.vim
+				\ 	| simalt ~x
+				\ | endif
+	autocmd VimLeave * mksession! ~/vimfiles/Sessions/LastSession.vim
 augroup END
+nnoremap <leader>s1 :mksession! ~/vimfiles/Sessions/Session1.vim<cr>
+nnoremap <leader>s2 :mksession! ~/vimfiles/Sessions/Session2.vim<cr>
+nnoremap <leader>s3 :mksession! ~/vimfiles/Sessions/Session3.vim<cr>
+nnoremap <leader>s4 :mksession! ~/vimfiles/Sessions/Session4.vim<cr>
+nnoremap <leader>s5 :mksession! ~/vimfiles/Sessions/Session5.vim<cr>
+nnoremap <leader>s6 :mksession! ~/vimfiles/Sessions/Session6.vim<cr>
+nnoremap <leader>s7 :mksession! ~/vimfiles/Sessions/Session7.vim<cr>
+nnoremap <leader>s8 :mksession! ~/vimfiles/Sessions/Session8.vim<cr>
+nnoremap <leader>s9 :mksession! ~/vimfiles/Sessions/Session9.vim<cr>
+nnoremap <leader>s0 :mksession! ~/vimfiles/Sessions/Session0.vim<cr>
+nnoremap <leader>l1 :source ~/vimfiles/Sessions/Session1.vim<cr>
+nnoremap <leader>l2 :source ~/vimfiles/Sessions/Session2.vim<cr>
+nnoremap <leader>l3 :source ~/vimfiles/Sessions/Session3.vim<cr>
+nnoremap <leader>l4 :source ~/vimfiles/Sessions/Session4.vim<cr>
+nnoremap <leader>l5 :source ~/vimfiles/Sessions/Session5.vim<cr>
+nnoremap <leader>l6 :source ~/vimfiles/Sessions/Session6.vim<cr>
+nnoremap <leader>l7 :source ~/vimfiles/Sessions/Session7.vim<cr>
+nnoremap <leader>l8 :source ~/vimfiles/Sessions/Session8.vim<cr>
+nnoremap <leader>l9 :source ~/vimfiles/Sessions/Session9.vim<cr>
+nnoremap <leader>l0 :source ~/vimfiles/Sessions/Session0.vim<cr>
 nnoremap <C-w><C-v> :vsplit .<cr>
 nnoremap <C-w><C-s> :split .<cr>
 set splitbelow
 set splitright
-nnoremap <C-w><C--> <C-w>_
-nnoremap <C-w><C-\> <C-w><bar>
+nnoremap <C-w><C--> <C-w><bar>
+nnoremap <C-w><C-\> <C-w>_
 nnoremap <C-w><C-m> <C-w>_<C-w><bar>
+nnoremap <C-Tab> :tabnext<cr>
+nnoremap <C-S-Tab> :tabprevious<cr>
+nnoremap <C-t> :tabnew .<cr>
+nnoremap <leader>ee :e .<cr>
 " }}}
 
 
@@ -47,6 +84,7 @@ Plug 'vim-airline/vim-airline'
 Plug 'chrisbra/Colorizer'
 Plug 'KabbAmine/vCoolor.vim'
 Plug 'tomtom/tcomment_vim'
+Plug 'leafgarland/typescript-vim'
 call plug#end()
 " }}}
 
@@ -72,6 +110,7 @@ set hlsearch incsearch
 nnoremap <cr> :nohlsearch<cr><cr>
 augroup Custom_Appearence
 	autocmd!
+	autocmd VimResized * exe "normal \<C-w>="
 	autocmd GUIEnter * simalt ~x " Set fullscreen window
 augroup END
 set showtabline=0 " never show tabline
@@ -101,6 +140,22 @@ let &showbreak='↳'
 augroup filetype_vim
 	autocmd!
 	autocmd FileType vim setlocal foldmethod=marker
+augroup END
+" }}}
+
+
+" File-wise mappings {{{
+augroup FileWiseMaps
+	autocmd!
+	" CSS
+	" v = value
+	" p = property
+	" ig = group name
+	" ag = whole group
+	autocmd Filetype css,scss onoremap v :<C-u>normal! 0f:lvg_<cr><space>;<esc>i
+	autocmd Filetype css,scss onoremap p :<C-u>normal! ^vf:h<cr>
+	autocmd Filetype css,scss onoremap ig :<C-u>execute "normal! j?{\rhv0"<cr>
+	autocmd Filetype css,scss onoremap ag :<C-u>execute "normal! j?{\r0v/}\r"<cr>
 augroup END
 " }}}
 
@@ -147,7 +202,11 @@ augroup END
 
 " MISC {{{
 nnoremap / /\v
+nnoremap <leader>: :<up>
+nnoremap x "_x
 nnoremap <C-s> :w<cr>
+inoremap {<cr> {<cr>a<cr>}<esc>k$s
+inoremap <c-s> <esc>:w<cr>
 " Keep curson in center, zz to change
 let &scrolloff=999
 nnoremap zz :let &scrolloff=999-&scrolloff<cr>
@@ -161,5 +220,5 @@ let mapleader=" " " set leader to <space>
 let maplocalleader="\\"
 " Easier to edit and source vimrc
 nnoremap <leader>ev :vsplit $MYVIMRC<cr>
-nnoremap <leader>sv :source $MYVIMRC<cr>
+nnoremap <leader>sv :source $MYVIMRC<cr>:simalt ~x<cr>
 " }}}
