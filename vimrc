@@ -26,8 +26,8 @@ Plug 'leafgarland/typescript-vim'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'mhartington/oceanic-next'
 Plug 'tpope/vim-surround'
-Plug 'ludovicchabant/vim-gutentags'
-" Plug 'sjl/gundo.vim'
+" Plug 'ludovicchabant/vim-gutentags'
+Plug 'sjl/gundo.vim'
 call plug#end()
 " }}}
 
@@ -80,7 +80,7 @@ endfunction
 function! AddDirectory(path)
 	tabnew ~/vimfiles/bookmarks.txt
 	execute "normal! Go" . a:path
-	w
+	w!
 	tabclose
 endfunction
 function! RegexEscape(string)
@@ -90,7 +90,7 @@ function! RemoveBookmark(path)
 	tabnew ~/vimfiles/bookmarks.txt
 	execute "/\\v" . RegexEscape(a:path)
 	normal! dd
-	w
+	w!
 	tabclose
 endfunction
 nnoremap <leader>ln :call NewSession()<cr>:source $MYVIMRC<cr>:simalt ~x<cr>:e ~/vimfiles/bookmarks.txt<cr>
@@ -99,8 +99,10 @@ nnoremap <leader>bcd :call AddDirectory(expand('%:p:h'))<cr>
 nnoremap <leader>dcd :call RemoveBookmark(expand('%:p:h'))<cr>
 nnoremap <leader>lb :e ~/vimfiles/bookmarks.txt<cr>
 function! SwapFunction(swapname)
+	echom a:swapname
+	echom fnamemodify("~\\vimfiles\\.bookmarks.txt.swp", ":p")
 	if a:swapname ==? fnamemodify("~\\vimfiles\\.bookmarks.txt.swp", ":p")
-		return 'o'
+		return 'e'
 	else
 		return ''
 	endif
@@ -111,15 +113,20 @@ augroup BookmarkFile
 	autocmd SwapExists * let v:swapchoice = SwapFunction(v:swapname)
 augroup END
 " }}}
-augroup CustomWindows " {{{
+" CustomWindows {{{
+function! CustomVimEnter()
+	if getcwd() ==? 'C:\Windows\system32' || getcwd() ==? fnamemodify("~", ":p:h")
+		cd ~
+		view ~/vimfiles/bookmarks.txt
+		nnoremap <buffer> <cr> 0v$gf:cd %:p:h<cr>
+	elseif getcwd() ==? fnamemodify("%", ":p")
+		e .
+	endif
+endfunction
+augroup CustomWindows
 	autocmd!
 	" Open bookmarks when starting without file
-	autocmd VimEnter *
-				\ if getcwd() ==? 'C:\Windows\system32'
-				\ 	| cd ~
-				\ 	| e ~/vimfiles/bookmarks.txt
-				\ 	| nnoremap <buffer> <cr> 0v$gf:cd %:p:h<cr>
-				\ | endif
+	autocmd VimEnter * call CustomVimEnter()
 	autocmd VimLeave * mksession! ~/vimfiles/Sessions/LastSession.vim
 augroup END " }}}
 nnoremap <C-w><C-v> :vsplit .<cr>
