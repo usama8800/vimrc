@@ -1,15 +1,32 @@
-" SET VIM (NOT VI) {{{
+"SETUP STUFF {{{
 set nocompatible
 set hidden
 let mapleader=" " " set leader to <space>
 let maplocalleader="\\"
-" }}}
-
-
-" ENABLE SYNTAX {{{
 set encoding=utf-8
+set backspace=indent,eol,start
 syntax enable
 filetype plugin indent on
+set nrformats-=octal
+set nrformats+=alpha
+set formatoptions+=j "  Delete comment character when joining lines
+set winaltkeys=no " Alt doesn't go to menu bar
+set autoread
+set clipboard+=unnamed
+set tabpagemax=50
+
+call plug#begin('~/vimfiles/plugged')
+Plug 'vim-airline/vim-airline'
+Plug 'chrisbra/Colorizer'
+Plug 'KabbAmine/vCoolor.vim'
+Plug 'tpope/vim-commentary'
+Plug 'leafgarland/typescript-vim'
+Plug 'vim-airline/vim-airline-themes'
+Plug 'mhartington/oceanic-next'
+Plug 'tpope/vim-surround'
+Plug 'ludovicchabant/vim-gutentags'
+Plug 'sjl/gundo.vim'
+call plug#end()
 " }}}
 
 
@@ -30,29 +47,9 @@ set wildignore+=*desktop.ini
 let g:netrw_banner=0
 let g:netrw_liststyle=0
 let g:netrw_list_hide='.*\.swp$'
-augroup CustomWindows " {{{
-	autocmd!
-	" Open netrw when start from directory
-	autocmd VimEnter *
-				\ if getcwd() ==? 'C:\Windows\system32'
-				\ 	| cd ~/Documents
-				\ | endif
-	autocmd VimEnter *
-				\ if expand("%") == ""
-				\ 	&& argc() == 0 && (v:servername =~ 'GVIM\d*' || v:servername == "")
-				\ 	| echom getcwd()
-				\ 	| e .
-				\ | endif
-	" Open last session when start from Start
-	" autocmd VimEnter *
-	" 			\ if getcwd() == 'C:\WINDOWS\system32'
-	" 			\ && filereadable(expand("~/vimfiles/Sessions/LastSession.vim"))
-	" 			\ 	| so ~/vimfiles/Sessions/LastSession.vim
-	" 			\ 	| simalt ~x
-	" 			\ | endif
-	autocmd VimLeave * mksession! ~/vimfiles/Sessions/LastSession.vim
-augroup END " }}}
 " Saving and loading sessions {{{
+set sessionoptions-=options
+set sessionoptions+=localoptions
 nnoremap <leader>s1 :mksession! ~/vimfiles/Sessions/Session1.vim<cr>
 nnoremap <leader>s2 :mksession! ~/vimfiles/Sessions/Session2.vim<cr>
 nnoremap <leader>s3 :mksession! ~/vimfiles/Sessions/Session3.vim<cr>
@@ -78,8 +75,43 @@ function! NewSession()
 	bwipeout
 	e .
 endfunction
-nnoremap <leader>ln :call NewSession()<cr>:source $MYVIMRC<cr>:simalt ~x<cr>
+function! AddDirectory(path)
+	tabnew ~/vimfiles/bookmarks.txt
+	execute "normal! Go" . a:path
+	w
+	tabclose
+endfunction
+function! RegexEscape(string)
+	return substitute(a:string, "\\\\", "\\\\\\\\", 'g')
+endfunction
+function! RemoveBookmark(path)
+	tabnew ~/vimfiles/bookmarks.txt
+	execute "/\\v" . RegexEscape(a:path)
+	normal! dd
+	w
+	tabclose
+endfunction
+nnoremap <leader>ln :call NewSession()<cr>:source $MYVIMRC<cr>:simalt ~x<cr>:e ~/vimfiles/bookmarks.txt<cr>
+nnoremap <leader>cd :cd %:p:h<cr>
+nnoremap <leader>bcd :call AddDirectory(expand('%:p:h'))<cr>
+nnoremap <leader>dcd :call RemoveBookmark(expand('%:p:h'))<cr>
+nnoremap <leader>lb :e ~/vimfiles/bookmarks.txt<cr>
+augroup BookmarkFile
+	autocmd!
+	autocmd BufRead ~/vimfiles/bookmarks.txt nnoremap <buffer> <cr> 0v$gf:cd %:p:h<cr>
+augroup END
 " }}}
+augroup CustomWindows " {{{
+	autocmd!
+	" Open bookmarks when starting without file
+	autocmd VimEnter *
+				\ if getcwd() ==? 'C:\Windows\system32'
+				\ 	| cd ~
+				\ 	| e ~/vimfiles/bookmarks.txt
+				\ 	| nnoremap <buffer> <cr> 0v$gf:cd %:p:h<cr>
+				\ | endif
+	autocmd VimLeave * mksession! ~/vimfiles/Sessions/LastSession.vim
+augroup END " }}}
 nnoremap <C-w><C-v> :vsplit .<cr>
 nnoremap <C-w><C-s> :split .<cr>
 set splitbelow
@@ -109,32 +141,17 @@ inoremap <c-s> <esc>:w<cr>
 " }}}
 
 
-" VIM-PLUG {{{
-call plug#begin('~/vimfiles/plugged')
-Plug 'vim-airline/vim-airline'
-Plug 'chrisbra/Colorizer'
-Plug 'KabbAmine/vCoolor.vim'
-Plug 'tomtom/tcomment_vim'
-Plug 'leafgarland/typescript-vim'
-Plug 'vim-airline/vim-airline-themes'
-Plug 'mhartington/oceanic-next'
-call plug#end()
-" }}}
-
-
 " APPEARENCE {{{
-set number " Line numbers
+set number
 set numberwidth=2
 set relativenumber
 set cursorline
 set lazyredraw
 set showmatch
 set hlsearch incsearch
-augroup EnterLeaveWindowCMDs
-	autocmd!
-	autocmd BufEnter,FocusGained,InsertLeave * set relativenumber foldcolumn=2
-	autocmd BufLeave,FocusLost,InsertEnter   * set norelativenumber foldcolumn=0
-augroup END
+set synmaxcol=190
+set display+=lastline
+set sidescrolloff=5
 set background=dark
 colorscheme OceanicNext
 set guifont=Hack:h10,PowerlineSymbols
@@ -152,6 +169,11 @@ augroup Custom_Appearence
 	autocmd VimResized * exe "normal \<C-w>="
 	autocmd GUIEnter * simalt ~x " Set fullscreen window
 augroup END
+augroup EnterLeaveWindowCMDs
+	autocmd!
+	autocmd BufEnter,FocusGained,InsertLeave * set relativenumber foldcolumn=1
+	autocmd BufLeave,FocusLost,InsertEnter * set norelativenumber foldcolumn=0
+augroup END
 set showtabline=1 " never show tabline
 let g:airline#extensions#tabline#enabled = 1
 let g:airline_powerline_fonts = 1
@@ -166,20 +188,15 @@ set autoindent
 set tabstop=4 " show existing tab with 4 spaces width
 set shiftwidth=4 " when indenting with '>', use 4 spaces width
 set shiftround
-set noexpandtab " on pressing tab, insert 4 spaces
-set listchars=tab:>-,space:·
+set noexpandtab " on pressing tab
+set listchars=tab:>-,space:·,trail:-,nbsp:+,extends:>,precedes:<
 set list
 set linebreak
-set cpo+=n
+set cpoptions+=n " use number line for wrapped text
 let &showbreak='↳'
-" }}}
-
-
-" FOLD SETTINGS {{{
-
-augroup filetype_vim
+augroup Whitespace
 	autocmd!
-	autocmd FileType vim setlocal foldmethod=marker
+	autocmd BufRead * set noexpandtab
 augroup END
 " }}}
 
@@ -192,10 +209,11 @@ augroup FileWiseMaps
 	" p = property
 	" ig = group name
 	" ag = whole group
-	autocmd Filetype css,scss onoremap v :<C-u>normal! 0f:lvg_<cr><space>;<esc>i
-	autocmd Filetype css,scss onoremap p :<C-u>normal! ^vf:h<cr>
-	autocmd Filetype css,scss onoremap ig :<C-u>execute "normal! j?{\rhv0"<cr>
-	autocmd Filetype css,scss onoremap ag :<C-u>execute "normal! j?{\r0v/}\r"<cr>
+	autocmd Filetype css,scss onoremap <buffer> v :<C-u>normal! 0f:lvg_<cr><space>;<esc>i
+	autocmd Filetype css,scss onoremap <buffer> p :<C-u>normal! ^vf:h<cr>
+	autocmd Filetype css,scss onoremap <buffer> ig :<C-u>execute "normal! j?{\rhv0"<cr>
+	autocmd Filetype css,scss onoremap <buffer> ag :<C-u>execute "normal! j?{\r0v/}\r"<cr>
+	autocmd Filetype python nnoremap <buffer> <C-x> :!start cmd /c python %<cr>
 augroup END
 " }}}
 
@@ -203,8 +221,8 @@ augroup END
 " AUTOCOMPLETES {{{
 augroup file_autocompletes
 	autocmd!
-	autocmd FileType html set omnifunc=htmlcomplete#CompleteTags
-	autocmd FileType css set omnifunc=csscomplete#CompleteCSS
+	autocmd FileType html setlocal omnifunc=htmlcomplete#CompleteTags
+	autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
 augroup END
 iabbrev @! usama8800@gmail.com
 iabbrev @@ usama@bu.edu
@@ -247,11 +265,11 @@ nnoremap k gk
 nnoremap <leader>; :<up>
 nnoremap x "_x
 inoremap {<cr> {<cr>a<cr>}<esc>k$s
-nnoremap // :let @/=""<cr>
+nnoremap // :let @/=""<cr>:echo "Search cleared"<cr>
+nnoremap gcc :Commentary<cr>j
 " Keep curson in center, zz to change
 let &scrolloff=999
 nnoremap zz :let &scrolloff=999-&scrolloff<cr>
-set winaltkeys=no " Alt doesn't go to menu bar
 " }}}
 
 
