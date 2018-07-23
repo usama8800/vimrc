@@ -14,6 +14,8 @@ set winaltkeys=no " Alt doesn't go to menu bar
 set autoread
 set clipboard+=unnamed
 set tabpagemax=50
+set undofile
+set undodir=~/vimfiles/undo
 
 call plug#begin('~/vimfiles/plugged')
 Plug 'vim-airline/vim-airline'
@@ -25,7 +27,7 @@ Plug 'vim-airline/vim-airline-themes'
 Plug 'mhartington/oceanic-next'
 Plug 'tpope/vim-surround'
 Plug 'ludovicchabant/vim-gutentags'
-Plug 'sjl/gundo.vim'
+" Plug 'sjl/gundo.vim'
 call plug#end()
 " }}}
 
@@ -96,9 +98,17 @@ nnoremap <leader>cd :cd %:p:h<cr>
 nnoremap <leader>bcd :call AddDirectory(expand('%:p:h'))<cr>
 nnoremap <leader>dcd :call RemoveBookmark(expand('%:p:h'))<cr>
 nnoremap <leader>lb :e ~/vimfiles/bookmarks.txt<cr>
+function! SwapFunction(swapname)
+	if a:swapname ==? fnamemodify("~\\vimfiles\\.bookmarks.txt.swp", ":p")
+		return 'o'
+	else
+		return ''
+	endif
+endfunction
 augroup BookmarkFile
 	autocmd!
 	autocmd BufRead ~/vimfiles/bookmarks.txt nnoremap <buffer> <cr> 0v$gf:cd %:p:h<cr>
+	autocmd SwapExists * let v:swapchoice = SwapFunction(v:swapname)
 augroup END
 " }}}
 augroup CustomWindows " {{{
@@ -180,6 +190,19 @@ let g:airline_powerline_fonts = 1
 let g:airline#extensions#tabline#formatter = 'unique_tail'
 let g:airline_detect_modified=1
 let g:airline_detect_paste=1
+function! FoldFunction()
+	if index(['vim'], &filetype) > -1 " marker list
+		setlocal foldmethod=marker
+	else
+		setlocal foldmethod=indent
+	endif
+endfunction
+augroup EnterLeaveWindowCMDs
+	autocmd!
+	autocmd BufEnter,FocusGained,InsertLeave * set relativenumber foldcolumn=1
+	autocmd BufLeave,FocusLost,InsertEnter * set norelativenumber foldcolumn=0
+	autocmd BufRead * call FoldFunction()
+augroup END
 " }}}
 
 
