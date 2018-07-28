@@ -6,3 +6,8 @@ x/*
 .*
 *.swp
 Sessions/*
+undo/*
+plugin/*
+bookmarks.txt
+tags
+
