@@ -60,14 +60,14 @@ Plug 'mhartington/oceanic-next'       " Theme
 Plug 'tpope/vim-surround'             " Surroind text in stuff
 Plug 'SirVer/ultisnips'
 Plug 'adelarsq/vim-matchit'           " Use % to go to matching xml tag
-Plug 'ludovicchabant/vim-gutentags'
+" Plug 'ludovicchabant/vim-gutentags'
 Plug 'mbbill/undotree'                " F5 for undo tree
-Plug 'Valloric/YouCompleteMe'
+" Plug 'Valloric/YouCompleteMe'
 Plug 'Valloric/MatchTagAlways'        " Highlight xml matching tag
 Plug 'honza/vim-snippets'
 Plug 'godlygeek/tabular'              " Nicely tabularize stuff
 Plug 'jiangmiao/auto-pairs'           " Braces and quotes pairing
-Plug 'vim-python/python-syntax'
+Plug 'farfanoide/vim-kivy'            " Kivy filetype support
 call plug#end()
 " }}}
 
@@ -81,8 +81,8 @@ function! CustomVimEnter()
 	if getcwd() ==? 'C:\Windows\system32' || getcwd() ==? fnamemodify("~", ":p:h")
 		cd ~
 		view ~/vimfiles/bookmarks.txt
-		nmap <buffer> <cr> 0v$gfc
-	elseif getcwd() ==? fnamemodify("%", ":p")
+		nmap <buffer> l 0v$gfc
+	elseif expand('%') ==? ''
 		e .
 	endif
 endfunction
@@ -161,7 +161,7 @@ nnoremap <leader>bcd :call AddDirectory(expand('%:p:h'))<cr>
 nnoremap <leader>dcd :call RemoveBookmark(expand('%:p:h'))<cr>
 nnoremap <leader>lb :e ~/vimfiles/bookmarks.txt<cr>
 " Go to file on line if in bookmarks file
-autocmd vimrc BufRead ~/vimfiles/bookmarks.txt nmap <buffer> <cr> 0v$gfc
+autocmd vimrc BufRead ~/vimfiles/bookmarks.txt nmap <buffer> l 0v$gfc
 " Open read only for bookmarks file
 autocmd vimrc SwapExists * let v:swapchoice = SwapFunction(v:swapname)
 " }}}
@@ -194,7 +194,8 @@ noremap <C-h> <C-w>h
 noremap <C-j> <C-w>j
 noremap <C-k> <C-w>k
 " Easier to edit and source vimrc
-nnoremap <leader>ev :vsplit $MYVIMRC<cr>
+nnoremap <leader>ev :e $MYVIMRC<cr>
+nnoremap <leader>sev :vsplit $MYVIMRC<cr>
 nnoremap <leader>sv :source $MYVIMRC<cr>:simalt ~x<cr>
 nnoremap <leader>ss :w<cr>:source %<cr>
 " Save on <C-s>
@@ -244,6 +245,7 @@ function! FoldFunction()
 	if index(['vim'], &filetype) > -1 " marker foldtype list
 		setlocal foldmethod=marker
 		setlocal foldlevel=-1
+	elseif index([], &filetype) > -1
 	else
 		setlocal foldmethod=indent
 	endif
@@ -256,12 +258,15 @@ autocmd vimrc BufLeave,FocusLost,InsertEnter * set norelativenumber foldcolumn=0
 
 
 " FIX WHITESPACE {{{
-set autoindent
-set tabstop=4    " show existing tab with 4 spaces width
-set shiftwidth=4 " when indenting with '>', use 4 spaces width
-set shiftround
-set noexpandtab
-set listchars=tab:>-,trail:-,nbsp:+,extends:>,precedes:<,eol:¬ " Show these whitespace characters
+if !exists("g:whitespace_set")
+	let g:whitespace_set=1
+	set tabstop=4    " show existing tab with 4 spaces width
+	set shiftwidth=4 " when indenting with '>', use 4 spaces width
+	set shiftround
+	set noexpandtab
+	set autoindent
+endif
+set listchars=tab:»\ ,trail:-,nbsp:+,extends:>,precedes:< ",eol:¬ " Show these whitespace characters
 let &showbreak='↳' " wrapped line character
 set list           " Use listchars
 set linebreak      " Don't wrap in the middle of a word
@@ -280,17 +285,18 @@ autocmd vimrc Filetype css,scss onoremap <buffer> p :<C-u>normal! ^vf:h<cr>
 autocmd vimrc Filetype css,scss onoremap <buffer> ig :<C-u>execute "normal! j?{\rhv0"<cr>
 autocmd vimrc Filetype css,scss onoremap <buffer> ag :<C-u>execute "normal! j?{\r0v/}\r"<cr>
 
-autocmd vimrc Filetype netrw nmap n <cr>
-autocmd vimrc Filetype netrw nmap b <leader>lb
+autocmd vimrc Filetype netrw nmap <buffer> l <cr>
+autocmd vimrc Filetype netrw nnoremap <buffer> b :e ~/vimfiles/bookmarks.txt<cr>
+autocmd vimrc Filetype netrw nmap <buffer> h -
 
 " Terminal maps
 tnoremap jk <C-w>N
 tnoremap :q <C-w>c
 " <C-z> to run filetypes
-autocmd vimrc Filetype python nnoremap <buffer> <C-z> :!start cmd /c python %<cr>
-autocmd vimrc Filetype typescript nnoremap <buffer> <C-z>
-			\ :execute "!start cmd /k cd " . getcwd() .
-			\" & ng serve -o & pause"<cr>
+nnoremap <C-z> <Nop>
+autocmd vimrc Filetype python nnoremap <buffer> <C-z> :!start cmd /k python % && exit<cr>
+autocmd vimrc Filetype kivy nnoremap <buffer> <C-z> :execute printf('!start cmd /k python main.py && exit')<cr>
+autocmd vimrc Filetype typescript nnoremap <buffer> <C-z> :execute "!start cmd /k cd " . getcwd() . " & ng serve -o & pause"<cr>
 autocmd vimrc Filetype tex nnoremap <C-z> :execute printf('!start cmd /c pdflatex %s && %s.pdf', expand('%'), expand('%:r'))<cr>
 autocmd vimrc Filetype markdown nnoremap <silent> <C-z> :execute "!start ".expand('%')<cr>
 " }}}
@@ -330,7 +336,7 @@ inoremap <Down> <nop>
 augroup formatter
 	autocmd!
 	autocmd BufWritePre * :normal! mqgg=G`q
-	if index(['', 'text'], &filetype) > -1
+	if index(['', 'text', 'python'], &filetype) > -1
 		autocmd!
 	endif
 augroup END
