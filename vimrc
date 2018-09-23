@@ -343,8 +343,11 @@ endif
 autocmd vimrc Filetype netrw nmap <buffer> h -
 
 " Terminal maps
-tnoremap jk <C-w>N
-tnoremap :q <C-w>c
+
+if has('win32')
+	tnoremap jk <C-w>N
+	tnoremap :q <C-w>c
+endif
 " <C-z> to run filetypes
 nnoremap <C-z> <Nop>
 if has('win32')
