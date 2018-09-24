@@ -16,6 +16,11 @@ set encoding=utf-8
 set backspace=indent,eol,start " be able to backspace everything
 syntax enable
 filetype plugin indent on
+if has('win32')
+	let g:vimfolder = '~/vimfiles'
+else
+	let g:vimfolder = '~/.vim'
+endif
 " set nrformats-=octal           " don't use <C-a> and <C-x> to increment octals
 " set nrformats+=alpha           " use <C-a> and <C-x> to increment letters
 set winaltkeys=no              " Alt doesn't go to menu bar
@@ -87,13 +92,11 @@ let g:netrw_liststyle=0                    " Thin list style
 let g:netrw_list_hide='.*\.swp$,^\.\/$'    " Hide swap files
 " Functions {{{
 function! CustomVimEnter()
-	if getcwd() ==? 'C:\Windows\system32' || (expand('%') == '' && getcwd() ==? fnamemodify("~", ":p"))
+	echom getcwd()
+	echom fnamemodify("~", ":p")
+	if getcwd() ==? 'C:\Windows\system32' || (expand('%') == '' && getcwd().'\' ==? fnamemodify("~", ":p"))
 		cd ~
-		if has('win32')
-			view ~/vimfiles/bookmarks.txt
-		else
-			view ~/.vim/bookmarks.txt
-		endif
+		execute 'view '.g:vimfolder.'/bookmarks.txt'
 		nmap <buffer> l 0v$gfc
 	elseif expand('%') ==? ''
 		e .
