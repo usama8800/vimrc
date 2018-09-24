@@ -315,11 +315,21 @@ set shiftround
 set noexpandtab
 set autoindent
 autocmd FileType python setlocal expandtab
+autocmd FileType c setlocal expandtab
 set listchars=tab:»\ ,trail:-,nbsp:+,extends:>,precedes:< ",eol:¬ " Show these whitespace characters
 let &showbreak='↳' " wrapped line character
 set list           " Use listchars
 set linebreak      " Don't wrap in the middle of a word
 set cpoptions+=n   " use number line for wrapped text
+function! TrimWhitespace()
+	let l:save = winsaveview()
+	keeppatterns %s/\s\+$//e
+	call winrestview(l:save)
+endfun
+nnoremap <leader>f :normal! mqgg=G`q<cr>
+nnoremap <leader>t :call TrimWhitespace()<cr>
+nnoremap <leader>h i <esc>l
+nnoremap <leader>l a <esc>
 " }}}
 
 
@@ -401,7 +411,6 @@ inoremap <Down> <nop>
 
 
 " MISC {{{
-nnoremap <leader>f :normal! mqgg=G`q<cr>
 nnoremap / /\v
 nnoremap j gj
 nnoremap k gk
