@@ -14,6 +14,7 @@ let mapleader=' '              " set leader to <space>
 let maplocalleader='\'
 set encoding=utf-8
 set backspace=indent,eol,start " be able to backspace everything
+set shellslash
 syntax enable
 filetype plugin indent on
 if has('win32')
@@ -29,11 +30,7 @@ set clipboard+=unnamed         " Use sytem clipboard for yanking and pasting
 set tabpagemax=50              " Raise tabs limit
 set undolevels=1000
 set undofile                   " Save undo history when exiting
-if has('win32')
-	set undodir=~/vimfiles/undo
-else
-	set undodir=~/.vim/undo
-endif
+let &undodir=g:vimfolder.'/undo'
 set history=1000               " Command-line history
 set shortmess=a
 set gdefault                   " make :s use /g by default
@@ -58,11 +55,7 @@ augroup END
 
 
 " PLUGINS {{{
-if has('win32')
-	call plug#begin('~/vimfiles/plugged')
-else
-	call plug#begin('~/.vim/plugged')
-endif
+call plug#begin(g:vimfolder.'/plugged')
 Plug 'vim-airline/vim-airline'        " Nice status line
 Plug 'vim-airline/vim-airline-themes'
 Plug 'chrisbra/Colorizer'             " Makes hex colors background the color
@@ -92,9 +85,7 @@ let g:netrw_liststyle=0                    " Thin list style
 let g:netrw_list_hide='.*\.swp$,^\.\/$'    " Hide swap files
 " Functions {{{
 function! CustomVimEnter()
-	echom getcwd()
-	echom fnamemodify("~", ":p")
-	if getcwd() ==? 'C:\Windows\system32' || (expand('%') == '' && getcwd().'\' ==? fnamemodify("~", ":p"))
+	if getcwd() ==? 'C:\Windows\system32' || (expand('%') == '' && getcwd().'/' ==? fnamemodify("~", ":p"))
 		cd ~
 		execute 'view '.g:vimfolder.'/bookmarks.txt'
 		nmap <buffer> l 0v$gfc
@@ -103,33 +94,26 @@ function! CustomVimEnter()
 	endif
 endfunction
 function! AddDirectory(path)
-	if has('win32')
-		tabnew ~/vimfiles/bookmarks.txt
-	else
-		tabnew ~/.vim/bookmarks.txt
-	endif
-	execute "normal! Go" . a:path
-	w!
-	tabclose
+	execute 'tabnew '.g:vimfolder.'/bookmarks.txt'
+endif
+execute "normal! Go" . a:path
+w!
+tabclose
 endfunction
 function! RegexEscape(string)
 	return substitute(a:string, "\\\\", "\\\\\\\\", 'g')
 endfunction
 function! RemoveBookmark(path)
-	if has('win32')
-		tabnew ~/vimfiles/bookmarks.txt
-	else
-		tabnew ~/.vim/bookmarks.txt
-	endif
-	execute "/\\v" . RegexEscape(a:path)
+	execute 'tabnew '.g:vimfolder.'/bookmarks.txt'
+	execute "/\\v" . a:path
 	normal! dd
 	w!
 	tabclose
 endfunction
 function! SwapFunction(swapname)
 	echom a:swapname
-	echom fnamemodify("~\\vimfiles\\.bookmarks.txt.swp", ":p")
-	if a:swapname ==? fnamemodify("~\\vimfiles\\.bookmarks.txt.swp", ":p")
+	echom fnamemodify("~/vimfiles/.bookmarks.txt.swp", ":p")
+	if a:swapname ==? fnamemodify("~/vimfiles/.bookmarks.txt.swp", ":p")
 		return 'e'
 	else
 		return ''
@@ -157,73 +141,39 @@ set sessionoptions+=localoptions " Save local options in sessions
 " <leader>l# to load session
 " <leader>ln for new session
 " <leader>ll for last session
-if has('win32')
-	nnoremap <leader>s1 :mksession! ~/vimfiles/Sessions/Session1.vim<cr>
-	nnoremap <leader>s2 :mksession! ~/vimfiles/Sessions/Session2.vim<cr>
-	nnoremap <leader>s3 :mksession! ~/vimfiles/Sessions/Session3.vim<cr>
-	nnoremap <leader>s4 :mksession! ~/vimfiles/Sessions/Session4.vim<cr>
-	nnoremap <leader>s5 :mksession! ~/vimfiles/Sessions/Session5.vim<cr>
-	nnoremap <leader>s6 :mksession! ~/vimfiles/Sessions/Session6.vim<cr>
-	nnoremap <leader>s7 :mksession! ~/vimfiles/Sessions/Session7.vim<cr>
-	nnoremap <leader>s8 :mksession! ~/vimfiles/Sessions/Session8.vim<cr>
-	nnoremap <leader>s9 :mksession! ~/vimfiles/Sessions/Session9.vim<cr>
-	nnoremap <leader>s0 :mksession! ~/vimfiles/Sessions/Session0.vim<cr>
-	nnoremap <leader>l1 :source ~/vimfiles/Sessions/Session1.vim<cr>
-	nnoremap <leader>l2 :source ~/vimfiles/Sessions/Session2.vim<cr>
-	nnoremap <leader>l3 :source ~/vimfiles/Sessions/Session3.vim<cr>
-	nnoremap <leader>l4 :source ~/vimfiles/Sessions/Session4.vim<cr>
-	nnoremap <leader>l5 :source ~/vimfiles/Sessions/Session5.vim<cr>
-	nnoremap <leader>l6 :source ~/vimfiles/Sessions/Session6.vim<cr>
-	nnoremap <leader>l7 :source ~/vimfiles/Sessions/Session7.vim<cr>
-	nnoremap <leader>l8 :source ~/vimfiles/Sessions/Session8.vim<cr>
-	nnoremap <leader>l9 :source ~/vimfiles/Sessions/Session9.vim<cr>
-	nnoremap <leader>l0 :source ~/vimfiles/Sessions/Session0.vim<cr>
-	nnoremap <leader>ll :source ~/vimfiles/Sessions/LastSession.vim<cr>
-else
-	nnoremap <leader>s1 :mksession! ~/.vim/Sessions/Session1.vim<cr>
-	nnoremap <leader>s2 :mksession! ~/.vim/Sessions/Session2.vim<cr>
-	nnoremap <leader>s3 :mksession! ~/.vim/Sessions/Session3.vim<cr>
-	nnoremap <leader>s4 :mksession! ~/.vim/Sessions/Session4.vim<cr>
-	nnoremap <leader>s5 :mksession! ~/.vim/Sessions/Session5.vim<cr>
-	nnoremap <leader>s6 :mksession! ~/.vim/Sessions/Session6.vim<cr>
-	nnoremap <leader>s7 :mksession! ~/.vim/Sessions/Session7.vim<cr>
-	nnoremap <leader>s8 :mksession! ~/.vim/Sessions/Session8.vim<cr>
-	nnoremap <leader>s9 :mksession! ~/.vim/Sessions/Session9.vim<cr>
-	nnoremap <leader>s0 :mksession! ~/.vim/Sessions/Session0.vim<cr>
-	nnoremap <leader>l1 :source ~/.vim/Sessions/Session1.vim<cr>
-	nnoremap <leader>l2 :source ~/.vim/Sessions/Session2.vim<cr>
-	nnoremap <leader>l3 :source ~/.vim/Sessions/Session3.vim<cr>
-	nnoremap <leader>l4 :source ~/.vim/Sessions/Session4.vim<cr>
-	nnoremap <leader>l5 :source ~/.vim/Sessions/Session5.vim<cr>
-	nnoremap <leader>l6 :source ~/.vim/Sessions/Session6.vim<cr>
-	nnoremap <leader>l7 :source ~/.vim/Sessions/Session7.vim<cr>
-	nnoremap <leader>l8 :source ~/.vim/Sessions/Session8.vim<cr>
-	nnoremap <leader>l9 :source ~/.vim/Sessions/Session9.vim<cr>
-	nnoremap <leader>l0 :source ~/.vim/Sessions/Session0.vim<cr>
-	nnoremap <leader>ll :source ~/.vim/Sessions/LastSession.vim<cr>
-endif
+nnoremap <leader>s1 :execute 'mksession! '.g:vimfolder.'/Sessions/Session1.vim'<cr>
+nnoremap <leader>s2 :execute 'mksession! '.g:vimfolder.'/Sessions/Session2.vim'<cr>
+nnoremap <leader>s3 :execute 'mksession! '.g:vimfolder.'/Sessions/Session3.vim'<cr>
+nnoremap <leader>s4 :execute 'mksession! '.g:vimfolder.'/Sessions/Session4.vim'<cr>
+nnoremap <leader>s5 :execute 'mksession! '.g:vimfolder.'/Sessions/Session5.vim'<cr>
+nnoremap <leader>s6 :execute 'mksession! '.g:vimfolder.'/Sessions/Session6.vim'<cr>
+nnoremap <leader>s7 :execute 'mksession! '.g:vimfolder.'/Sessions/Session7.vim'<cr>
+nnoremap <leader>s8 :execute 'mksession! '.g:vimfolder.'/Sessions/Session8.vim'<cr>
+nnoremap <leader>s9 :execute 'mksession! '.g:vimfolder.'/Sessions/Session9.vim'<cr>
+nnoremap <leader>s0 :execute 'mksession! '.g:vimfolder.'/Sessions/Session0.vim'<cr>
+nnoremap <leader>l1 :execute 'source '.g:vimfolder.'/Sessions/Session1.vim'<cr>
+nnoremap <leader>l2 :execute 'source '.g:vimfolder.'/Sessions/Session2.vim'<cr>
+nnoremap <leader>l3 :execute 'source '.g:vimfolder.'/Sessions/Session3.vim'<cr>
+nnoremap <leader>l4 :execute 'source '.g:vimfolder.'/Sessions/Session4.vim'<cr>
+nnoremap <leader>l5 :execute 'source '.g:vimfolder.'/Sessions/Session5.vim'<cr>
+nnoremap <leader>l6 :execute 'source '.g:vimfolder.'/Sessions/Session6.vim'<cr>
+nnoremap <leader>l7 :execute 'source '.g:vimfolder.'/Sessions/Session7.vim'<cr>
+nnoremap <leader>l8 :execute 'source '.g:vimfolder.'/Sessions/Session8.vim'<cr>
+nnoremap <leader>l9 :execute 'source '.g:vimfolder.'/Sessions/Session9.vim'<cr>
+nnoremap <leader>l0 :execute 'source '.g:vimfolder.'/Sessions/Session0.vim'<cr>
+nnoremap <leader>ll :execute 'source '.g:vimfolder.'/Sessions/LastSession.'vim<cr>
 nnoremap <leader>ln :call NewSession()<cr>
 " Autosave session on leaving
-if has('win32')
-	autocmd vimrc VimLeave * mksession! ~/vimfiles/Sessions/LastSession.vim
-else
-	autocmd vimrc VimLeave * mksession! ~/.vim/Sessions/LastSession.vim
-endif
+autocmd vimrc VimLeave * execute 'mksession! '.g:vimfolder.'/Sessions/LastSession.vim'
 " }}}
 " Bookmarks {{{
 " Open bookmarks when starting without file or directory
 autocmd vimrc VimEnter * call CustomVimEnter()
 nnoremap <leader>bcd :call AddDirectory(expand('%:p:h'))<cr>
 nnoremap <leader>dcd :call RemoveBookmark(expand('%:p:h'))<cr>
-
 " Go to file on line if in bookmarks file
-if has('win32')
-	nnoremap <leader>lb :e ~/vimfiles/bookmarks.txt<cr>
-	autocmd vimrc BufRead ~/vimfiles/bookmarks.txt nmap <buffer> l 0v$gfc
-else
-	nnoremap <leader>lb :e ~/.vim/bookmarks.txt<cr>
-	autocmd vimrc BufRead ~/.vim/bookmarks.txt nmap <buffer> l 0v$gfc
-endif
+nnoremap <leader>lb :e ~/vimfiles/bookmarks.txt<cr>
+autocmd vimrc BufRead ~/vimfiles/bookmarks.txt nmap <buffer> l 0v$gfc
 " Open read only for bookmarks file
 autocmd vimrc SwapExists * let v:swapchoice = SwapFunction(v:swapname)
 " }}}
@@ -348,15 +298,10 @@ autocmd vimrc Filetype css,scss onoremap <buffer> ig :<C-u>execute "normal! j?{\
 autocmd vimrc Filetype css,scss onoremap <buffer> ag :<C-u>execute "normal! j?{\r0v/}\r"<cr>
 
 autocmd vimrc Filetype netrw nmap <buffer> l <cr>
-if has('win32')
-	autocmd vimrc Filetype netrw nnoremap <buffer> b :e ~/vimfiles/bookmarks.txt<cr>
-else
-	autocmd vimrc Filetype netrw nnoremap <buffer> b :e ~/.vim/bookmarks.txt<cr>
-endif
+autocmd vimrc Filetype netrw nnoremap <buffer> b :execute 'e'.g:vimfolder.'/bookmarks.txt'<cr>
 autocmd vimrc Filetype netrw nmap <buffer> h -
 
 " Terminal maps
-
 if has('win32')
 	tnoremap jk <C-w>N
 	tnoremap :q <C-w>c
@@ -385,11 +330,7 @@ iabbrev @@ usama@bu.edu
 " expand f to find so we can do :f <filename>
 cabbrev f find
 " snippets
-if has('win32')
-	nnoremap ,html :read ~/vimfiles/snippets/base.html<CR>G4kA
-else
-	nnoremap ,html :read ~/.vim/snippets/base.html<CR>G4kA
-endif
+nnoremap ,html :execute 'read '.g:vimfolder.'/snippets/base.html'<CR>G4kA
 
 nnoremap <F5> :UndotreeToggle<cr>
 let g:undotree_SetFocusWhenToggle = 1
