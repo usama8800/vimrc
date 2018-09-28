@@ -161,7 +161,7 @@ nnoremap <leader>l7 :execute 'source '.g:vimfolder.'/Sessions/Session7.vim'<cr>
 nnoremap <leader>l8 :execute 'source '.g:vimfolder.'/Sessions/Session8.vim'<cr>
 nnoremap <leader>l9 :execute 'source '.g:vimfolder.'/Sessions/Session9.vim'<cr>
 nnoremap <leader>l0 :execute 'source '.g:vimfolder.'/Sessions/Session0.vim'<cr>
-nnoremap <leader>ll :execute 'source '.g:vimfolder.'/Sessions/LastSession.'vim<cr>
+nnoremap <leader>ll :execute 'source '.g:vimfolder.'/Sessions/LastSession.vim'<cr>
 nnoremap <leader>ln :call NewSession()<cr>
 " Autosave session on leaving
 autocmd vimrc VimLeave * execute 'mksession! '.g:vimfolder.'/Sessions/LastSession.vim'
@@ -230,7 +230,7 @@ set showmatch         " highlight matching brace
 set matchtime=2       " highlight for 2 10th of a second
 set hlsearch          " highlight search matches
 set incsearch         " show line where match is found
-set synmaxcol=300     " don't check for syntax item after column 300
+" set synmaxcol=300     " don't check for syntax item after column 300
 set display+=lastline " @@@ at the end of last line if too long
 set sidescrolloff=5
 let g:colorizer_auto_filetype='css'
@@ -269,6 +269,7 @@ set noexpandtab
 set autoindent
 autocmd FileType python setlocal expandtab
 autocmd FileType c setlocal expandtab
+autocmd FileType tex setlocal expandtab
 set listchars=tab:»\ ,trail:-,nbsp:+,extends:>,precedes:< ",eol:¬ " Show these whitespace characters
 let &showbreak='↳' " wrapped line character
 set list           " Use listchars
@@ -309,17 +310,17 @@ endif
 " <C-z> to run filetypes
 nnoremap <C-z> <Nop>
 if has('win32')
-	autocmd vimrc Filetype python nnoremap <buffer> <C-z> :!start cmd /k python % && exit<cr>
-	autocmd vimrc Filetype kivy nnoremap <buffer> <C-z> :execute printf('!start cmd /k python main.py && exit')<cr>
-	autocmd vimrc Filetype typescript nnoremap <buffer> <C-z> :execute "!start cmd /k cd " . getcwd() . " & ng serve -o & pause"<cr>
-	autocmd vimrc Filetype tex nnoremap <buffer> <C-z> :execute printf('!start cmd /c pdflatex --shell-escape %s && chrome.exe "%s.pdf"', expand('%'), expand('%:p:r'))<cr>
-	autocmd vimrc Filetype tex nnoremap <buffer> <leader><C-z> :execute printf('!start cmd /c pdflatex --shell-escape %s && chrome.exe "%s.pdf" && pause', expand('%'), expand('%:p:r'))<cr>
-	autocmd vimrc Filetype markdown nnoremap <buffer> <silent> <C-z> :execute "!start ".expand('%')<cr>
-	autocmd vimrc Filetype c nnoremap <buffer> <C-z> :execute printf('!start cmd /c gcc %s.c -o %s.exe && %s.exe && echo. & echo. && pause', expand('%:r'), expand('%:r'), expand('%:r'))<cr>
+	autocmd vimrc Filetype python nnoremap <buffer> <C-z> :w<cr>:!start cmd /k python % && exit<cr>
+	autocmd vimrc Filetype kivy nnoremap <buffer> <C-z> :w<cr>:execute printf('!start cmd /k python main.py && exit')<cr>
+	autocmd vimrc Filetype typescript nnoremap <buffer> <C-z> :w<cr>:execute "!start cmd /k cd " . getcwd() . " & ng serve -o & pause"<cr>
+	autocmd vimrc Filetype tex nnoremap <buffer> <C-z> :w<cr>:execute printf('!start cmd /c pdflatex --shell-escape "%s" && chrome.exe "%s.pdf"', expand('%'), expand('%:p:r'))<cr>
+	autocmd vimrc Filetype tex nnoremap <buffer> <leader><C-z> :w<cr>:execute printf('!start cmd /c pdflatex --shell-escape "%s" && chrome.exe "%s.pdf" && pause', expand('%:p'), expand('%:p:r'))<cr>
+	autocmd vimrc Filetype markdown nnoremap <buffer> <silent> <C-z> :w<cr>:execute "!start ".expand('%')<cr>
+	autocmd vimrc Filetype c nnoremap <buffer> <C-z> :w<cr>:execute printf('!start cmd /c gcc %s.c -o %s.exe && %s.exe && echo. & echo. && pause', expand('%:r'), expand('%:r'), expand('%:r'))<cr>
 else
-	autocmd vimrc Filetype python nnoremap <buffer> <C-z> :!python %<cr>
-	autocmd vimrc Filetype tex nnoremap <buffer> <C-z> :execute printf('!pdflatex --shell-escape %s; chrome.exe "%s.pdf"', expand('%'), expand('%:p:r'))<cr>
-	autocmd vimrc Filetype c nnoremap <buffer> <C-z> :execute printf('!gcc -o %s %s; ./%s', expand('%:r'), expand('%'), expand('%:r'))<cr>
+	autocmd vimrc Filetype python nnoremap <buffer> <C-z> :w<cr>:!python %<cr>
+	autocmd vimrc Filetype tex nnoremap <buffer> <C-z> :w<cr>:execute printf('!pdflatex --shell-escape %s; chrome.exe "%s.pdf"', expand('%'), expand('%:p:r'))<cr>
+	autocmd vimrc Filetype c nnoremap <buffer> <C-z> :w<cr>:execute printf('!gcc -o %s %s; ./%s', expand('%:r'), expand('%'), expand('%:r'))<cr>
 endif
 " }}}
 
