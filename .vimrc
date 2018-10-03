@@ -69,7 +69,9 @@ Plug 'tpope/vim-surround'             " Surroind text in stuff
 " Plug 'adelarsq/vim-matchit'           " Use % to go to matching xml tag
 " Plug 'ludovicchabant/vim-gutentags'
 Plug 'mbbill/undotree'                " F5 for undo tree
-" Plug 'Valloric/YouCompleteMe'
+if v:version > 740
+	Plug 'Valloric/YouCompleteMe'
+endif
 " Plug 'Valloric/MatchTagAlways'        " Highlight xml matching tag
 " Plug 'honza/vim-snippets'
 Plug 'godlygeek/tabular'              " Nicely tabularize stuff
