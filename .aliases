@@ -13,6 +13,7 @@ alias dot="cd ~/Documents/dotfiles;la"
 alias 210="cd ~/Documents/210;la"
 
 alias sb="source ~/.bashrc"
+alias cls="clear"
 alias :q="exit"
 alias untar="tar xvf"
 
