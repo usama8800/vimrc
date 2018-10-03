@@ -233,6 +233,20 @@ set incsearch         " show line where match is found
 " set synmaxcol=300     " don't check for syntax item after column 300
 set display+=lastline " @@@ at the end of last line if too long
 set sidescrolloff=5
+if !(!has('gui_running') && has('win32'))
+	colorscheme OceanicNext
+endif
+set guifont=Hack:h10,PowerlineSymbols
+set guioptions-=T
+set guioptions-=l
+set guioptions-=L
+set guioptions-=r
+set guioptions-=R
+set guioptions-=m
+set guioptions-=M
+set background=dark
+autocmd vimrc VimResized * execute "normal \<C-w>="
+autocmd vimrc GUIEnter * simalt ~x " Set fullscreen window
 let g:colorizer_auto_filetype='css'
 autocmd vimrc BufNewFile,BufRead *.css,*.html,*.htm :ColorHighlight! " Auto ColorHighlight css and html files
 " Resize all windows to same size
@@ -299,7 +313,7 @@ autocmd vimrc Filetype css,scss onoremap <buffer> ig :<C-u>execute "normal! j?{\
 autocmd vimrc Filetype css,scss onoremap <buffer> ag :<C-u>execute "normal! j?{\r0v/}\r"<cr>
 
 autocmd vimrc Filetype netrw nmap <buffer> l <cr>
-autocmd vimrc Filetype netrw nnoremap <buffer> b :execute 'e'.g:vimfolder.'/bookmarks.txt'<cr>
+autocmd vimrc Filetype netrw nnoremap <buffer> b :execute 'e '.g:vimfolder.'/bookmarks.txt'<cr>
 autocmd vimrc Filetype netrw nmap <buffer> h -
 
 " Terminal maps
