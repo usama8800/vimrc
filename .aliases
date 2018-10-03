@@ -7,8 +7,9 @@ alias ....="cd ../../.."
 alias .....="cd ../../../.."
 
 # Shortcuts
-alias d="cd ~/Documents"
-alias g="git"
+alias docs="cd ~/Documents"
+alias dot="cd ~/Documents/dotfiles"
+alias 210="cd ~/Documents/210"
 
 # Detect which `ls` flavor is in use
 if ls --color > /dev/null 2>&1; then # GNU `ls`
