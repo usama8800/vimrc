@@ -1,12 +1,11 @@
-autoload/*
-plugged/*
-colors/*
-x/*
+.vim/plugged/
+.vim/colors/
+.vim/x/
 *~*
 *.swp
-Sessions/*
-undo/*
-plugin/*
-bookmarks.txt
-tags
+.vim/Sessions/
+.vim/undo/
+.vim/plugin/
+.vim/bookmarks.txt
+.vim/tags
 
