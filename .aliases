@@ -26,6 +26,7 @@ alias commit="git add *;git commit"
 
 # programs
 alias ranger="~/Programs/ranger/ranger.py"
+alias r="~/Programs/ranger/ranger.py"
 
 
 
