@@ -7,9 +7,30 @@ alias ....="cd ../../.."
 alias .....="cd ../../../.."
 
 # Shortcuts
-alias docs="cd ~/Documents"
-alias dot="cd ~/Documents/dotfiles"
-alias 210="cd ~/Documents/210"
+alias d="cd ~/Documents;la"
+alias p="cd ~/Programs;la"
+alias dot="cd ~/Documents/dotfiles;la"
+alias 210="cd ~/Documents/210;la"
+
+alias sb="source ~/.bashrc"
+alias cls="clear"
+alias :q="exit"
+alias untar="tar xvf"
+
+# git commands
+alias g="git"
+alias push="git push"
+alias fetch="git fetch"
+alias pull="git pull"
+alias commit="git add *;git commit"
+
+# programs
+alias ranger="~/Programs/ranger/ranger.py"
+alias r="~/Programs/ranger/ranger.py"
+
+
+
+
 
 # Detect which `ls` flavor is in use
 if ls --color > /dev/null 2>&1; then # GNU `ls`
