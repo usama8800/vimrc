@@ -325,6 +325,7 @@ if has('win32')
 endif
 " <C-z> to run filetypes
 nnoremap <C-z> <Nop>
+autocmd vimrc Filetype c nnoremap <buffer> <C-b> :w<cr>:GCC -O1 -g<cr>
 if has('win32')
 	autocmd vimrc Filetype python nnoremap <buffer> <C-z> :w<cr>:!start cmd /k python % && exit<cr>
 	autocmd vimrc Filetype kivy nnoremap <buffer> <C-z> :w<cr>:execute printf('!start cmd /k python main.py && exit')<cr>
@@ -332,11 +333,15 @@ if has('win32')
 	autocmd vimrc Filetype tex nnoremap <buffer> <C-z> :w<cr>:execute printf('!start cmd /c pdflatex --shell-escape "%s" && chrome.exe "%s.pdf"', expand('%'), expand('%:p:r'))<cr>
 	autocmd vimrc Filetype tex nnoremap <buffer> <leader><C-z> :w<cr>:execute printf('!start cmd /c pdflatex --shell-escape "%s" && chrome.exe "%s.pdf" && pause', expand('%:p'), expand('%:p:r'))<cr>
 	autocmd vimrc Filetype markdown nnoremap <buffer> <silent> <C-z> :w<cr>:execute "!start ".expand('%')<cr>
-	autocmd vimrc Filetype c nnoremap <buffer> <C-z> :w<cr>:execute printf('!start cmd /c gcc %s.c -o %s.exe && %s.exe && echo. & echo. && pause', expand('%:r'), expand('%:r'), expand('%:r'))<cr>
+	command! -nargs=* GCC execute printf('!start cmd /c gcc %s.c %s -o %s.exe', expand('%:r'), "<args>", expand('%:r'))
+	autocmd vimrc Filetype c nnoremap <buffer> <C-z> :w<cr>:execute printf('!start cmd /c gcc %s.c -o %s.exe && %s.exe && echo. & echo. && pause',expand('%:r'), expand('%:r'),  expand('%:r'))<cr>
+	autocmd vimrc Filetype c nnoremap <buffer> <C-d> :w<cr>:execute printf('!start cmd /c gdb32 %s.exe', expand('%:r'))<cr>
 else
 	autocmd vimrc Filetype python nnoremap <buffer> <C-z> :w<cr>:!python %<cr>
 	autocmd vimrc Filetype tex nnoremap <buffer> <C-z> :w<cr>:execute printf('!pdflatex --shell-escape %s; chrome.exe "%s.pdf"', expand('%'), expand('%:p:r'))<cr>
-	autocmd vimrc Filetype c nnoremap <buffer> <C-z> :w<cr>:execute printf('!gcc -o %s %s; ./%s', expand('%:r'), expand('%'), expand('%:r'))<cr>
+	command! -nargs=* GCC execute printf('!gcc %s -o %s %s', "<args>", expand('%:r'), expand('%'))
+	autocmd vimrc Filetype c nnoremap <buffer> <C-z> :w<cr>:execute printf('!gcc %s -o %s %s; ./%s', expand('%:r'), expand('%'), expand('%:r'))<cr>
+	autocmd vimrc Filetype c nnoremap <buffer> <C-d> :w<cr>:execute printf('!gdb %s', expand('%:r'))<cr>
 endif
 " }}}
 
@@ -347,7 +352,8 @@ iabbrev @@ usama@bu.edu
 " expand f to find so we can do :f <filename>
 cabbrev f find
 " snippets
-nnoremap ,html :execute 'read '.g:vimfolder.'/snippets/base.html'<CR>G4kA
+nnoremap ,html :execute 'read '.g:vimfolder.'/snippets/base.html'<CR>ggddG4kA
+nnoremap ,c :execute 'read '.g:vimfolder.'/snippets/base.c'<CR>ggdd/main<CR>j
 
 nnoremap <F5> :UndotreeToggle<cr>
 let g:undotree_SetFocusWhenToggle = 1
@@ -382,7 +388,9 @@ vnoremap <leader>; :<up>
 nnoremap x "_x
 nnoremap <leader>x x
 nnoremap // :let @/=""<cr>:echo "Search cleared"<cr>
-nnoremap gcc :Commentary<cr>j
+nnoremap <leader>/ :Commentary<cr>j
+vnoremap <leader>/ :Commentary<cr>
+nnoremap <leader>D ggdG
 " Open cmd in current folder
 nnoremap <C-c> :execute "!start cmd /K cd " . expand("%:p:h")<cr>
 " substitute current selection in file
