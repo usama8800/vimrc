@@ -340,8 +340,9 @@ else
 	autocmd vimrc Filetype python nnoremap <buffer> <C-z> :w<cr>:!python %<cr>
 	autocmd vimrc Filetype tex nnoremap <buffer> <C-z> :w<cr>:execute printf('!pdflatex --shell-escape %s; chrome.exe "%s.pdf"', expand('%'), expand('%:p:r'))<cr>
 	command! -nargs=* GCC execute printf('!gcc %s -o %s %s', "<args>", expand('%:r'), expand('%'))
-	autocmd vimrc Filetype c nnoremap <buffer> <C-z> :w<cr>:execute printf('!gcc %s -o %s %s; ./%s', expand('%:r'), expand('%'), expand('%:r'))<cr>
+	autocmd vimrc Filetype c nnoremap <buffer> <C-z> :w<cr>:execute printf('!gcc -o %s %s; ./%s', expand('%:r'), expand('%'), expand('%:r'))<cr>
 	autocmd vimrc Filetype c nnoremap <buffer> <C-d> :w<cr>:execute printf('!gdb %s', expand('%:r'))<cr>
+	autocmd vimrc Filetype c nnoremap <buffer> <C-a> :w<cr>:execute printf('!objdump -d %s', expand('%:r'))<cr>
 endif
 " }}}
 
