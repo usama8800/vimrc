@@ -199,7 +199,6 @@ inoremap <C-Tab> <esc>:tabnext<cr>
 nnoremap <C-S-Tab> :tabprevious<cr>
 inoremap <C-S-Tab> <esc>:tabprevious<cr>
 nnoremap <C-t> :tabnew .<cr>
-inoremap <C-t> <esc>:tabnew .<cr>
 " nnoremap <C-w> :set timeoutlen=1<cr>:q<cr>:set timeoutlen=1000<cr>
 nnoremap <leader><C-w> <C-w>
 " Open netrw
@@ -304,6 +303,7 @@ nnoremap <leader>l a <esc>
 
 
 " File-wise mappings {{{
+
 " CSS
 " v  = value
 " p  = property
@@ -314,9 +314,23 @@ autocmd vimrc Filetype css,scss onoremap <buffer> p :<C-u>normal! ^vf:h<cr>
 autocmd vimrc Filetype css,scss onoremap <buffer> ig :<C-u>execute "normal! j?{\rhv0"<cr>
 autocmd vimrc Filetype css,scss onoremap <buffer> ag :<C-u>execute "normal! j?{\r0v/}\r"<cr>
 
+" Netrw
+" l = Enter directory or edit file
+" b = Bookmark Directory
+" h = Move up directory
 autocmd vimrc Filetype netrw nmap <buffer> l <cr>
 autocmd vimrc Filetype netrw nnoremap <buffer> b :execute 'e '.g:vimfolder.'/bookmarks.txt'<cr>
 autocmd vimrc Filetype netrw nmap <buffer> h -
+
+" Tex
+autocmd vimrc Filetype tex nnoremap <buffer> <localleader>t a{\Huge Todo}<esc>
+autocmd vimrc Filetype tex nnoremap <buffer> <localleader>i a\noindent<esc>
+autocmd vimrc Filetype tex nnoremap <buffer> <localleader>s a\textbf{Solution.}<esc>
+autocmd vimrc Filetype tex nnoremap <buffer> <localleader>p a\textbf{Proof.}<esc>
+autocmd vimrc Filetype tex vmap <buffer> <localleader>b S}i\textbfjk
+autocmd vimrc Filetype tex vmap <buffer> <localleader>e S}i\textemjk
+autocmd vimrc Filetype tex vmap <buffer> <localleader>e S}i\textemjk
+autocmd vimrc Filetype tex inoremap <buffer> <localleader>. \cdot
 
 " Terminal maps
 if has('win32')
@@ -324,7 +338,7 @@ if has('win32')
 	tnoremap :q <C-w>c
 endif
 " <C-z> to run filetypes
-nnoremap <C-z> <Nop>
+nnoremap <C-z> :w
 autocmd vimrc Filetype c nnoremap <buffer> <C-b> :w<cr>:GCC -O1 -g<cr>
 if has('win32')
 	autocmd vimrc Filetype python nnoremap <buffer> <C-z> :w<cr>:!start cmd /k python % && exit<cr>
@@ -374,6 +388,7 @@ noremap <Up> <nop>
 inoremap <Up> <nop>
 noremap <Down> <nop>
 inoremap <Down> <nop>
+set mouse=""
 " }}}
 
 
@@ -383,6 +398,10 @@ nnoremap j gj
 nnoremap k gk
 nnoremap gj j
 nnoremap gk k
+vnoremap k gk
+vnoremap j gj
+vnoremap gk k
+vnoremap gj j
 nnoremap <leader>; :<up>
 vnoremap <leader>; :<up>
 nnoremap x "_x
