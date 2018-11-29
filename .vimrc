@@ -277,6 +277,8 @@ autocmd vimrc BufLeave,FocusLost,InsertEnter * set norelativenumber foldcolumn=0
 
 
 " FIX WHITESPACE {{{
+set virtualedit=block
+set smarttab
 set tabstop=4    " show existing tab with 4 spaces width
 set shiftwidth=4 " when indenting with '>', use 4 spaces width
 set shiftround
@@ -339,24 +341,22 @@ if has('win32')
 endif
 " <C-z> to run filetypes
 nnoremap <C-z> :w
-autocmd vimrc Filetype c nnoremap <buffer> <C-b> :w<cr>:GCC -O1 -g<cr>
 if has('win32')
-	autocmd vimrc Filetype python nnoremap <buffer> <C-z> :w<cr>:!start cmd /k python % && exit<cr>
-	autocmd vimrc Filetype kivy nnoremap <buffer> <C-z> :w<cr>:execute printf('!start cmd /k python main.py && exit')<cr>
-	autocmd vimrc Filetype typescript nnoremap <buffer> <C-z> :w<cr>:execute "!start cmd /k cd " . getcwd() . " & ng serve -o & pause"<cr>
-	autocmd vimrc Filetype tex nnoremap <buffer> <C-z> :w<cr>:execute printf('!start cmd /c pdflatex --shell-escape "%s" && chrome.exe "%s.pdf"', expand('%'), expand('%:p:r'))<cr>
-	autocmd vimrc Filetype tex nnoremap <buffer> <leader><C-z> :w<cr>:execute printf('!start cmd /c pdflatex --shell-escape "%s" && chrome.exe "%s.pdf" && pause', expand('%:p'), expand('%:p:r'))<cr>
-	autocmd vimrc Filetype markdown nnoremap <buffer> <silent> <C-z> :w<cr>:execute "!start ".expand('%')<cr>
+	autocmd vimrc Filetype python nnoremap <buffer> <localleader>r :w<cr>:!start cmd /k python % && exit<cr>
+	autocmd vimrc Filetype typescript nnoremap <buffer> <localleader>r :w<cr>:execute "!start cmd /k cd " . getcwd() . " & ng serve -o & pause"<cr>
+	autocmd vimrc Filetype tex nnoremap <buffer> <localleader>r :w<cr>:execute printf('!start cmd /c pdflatex --shell-escape "%s" && chrome.exe "%s.pdf"', expand('%'), expand('%:p:r'))<cr>
+	autocmd vimrc Filetype tex nnoremap <buffer> <localleader><localleader>r :w<cr>:execute printf('!start cmd /c pdflatex --shell-escape "%s" && chrome.exe "%s.pdf" && pause', expand('%:p'), expand('%:p:r'))<cr>
+	autocmd vimrc Filetype markdown nnoremap <buffer> <silent> <localleader>r :w<cr>:execute "!start ".expand('%')<cr>
 	command! -nargs=* GCC execute printf('!start cmd /c gcc %s.c %s -o %s.exe', expand('%:r'), "<args>", expand('%:r'))
-	autocmd vimrc Filetype c nnoremap <buffer> <C-z> :w<cr>:execute printf('!start cmd /c gcc %s.c -o %s.exe && %s.exe && echo. & echo. && pause',expand('%:r'), expand('%:r'),  expand('%:r'))<cr>
-	autocmd vimrc Filetype c nnoremap <buffer> <C-d> :w<cr>:execute printf('!start cmd /c gdb32 %s.exe', expand('%:r'))<cr>
+	autocmd vimrc Filetype c nnoremap <buffer> <localleader>r :w<cr>:execute printf('!start cmd /c gcc %s.c -o %s.exe && %s.exe && echo. & echo. && pause',expand('%:r'), expand('%:r'),  expand('%:r'))<cr>
+	autocmd vimrc Filetype c nnoremap <buffer> <localleader>b :w<cr>:execute printf('!start cmd /c gdb32 %s.exe', expand('%:r'))<cr>
 else
-	autocmd vimrc Filetype python nnoremap <buffer> <C-z> :w<cr>:!python %<cr>
-	autocmd vimrc Filetype tex nnoremap <buffer> <C-z> :w<cr>:execute printf('!pdflatex --shell-escape %s; chrome.exe "%s.pdf"', expand('%'), expand('%:p:r'))<cr>
+	autocmd vimrc Filetype python nnoremap <buffer> <localleader>r :w<cr>:!python %<cr>
+	autocmd vimrc Filetype tex nnoremap <buffer> <localleader>r :w<cr>:execute printf('!pdflatex --shell-escape %s; chrome.exe "%s.pdf"', expand('%'), expand('%:p:r'))<cr>
 	command! -nargs=* GCC execute printf('!gcc %s -o %s %s', "<args>", expand('%:r'), expand('%'))
-	autocmd vimrc Filetype c nnoremap <buffer> <C-z> :w<cr>:execute printf('!gcc -o %s %s; ./%s', expand('%:r'), expand('%'), expand('%:r'))<cr>
-	autocmd vimrc Filetype c nnoremap <buffer> <C-d> :w<cr>:execute printf('!gdb %s', expand('%:r'))<cr>
-	autocmd vimrc Filetype c nnoremap <buffer> <C-a> :w<cr>:execute printf('!objdump -d %s', expand('%:r'))<cr>
+	autocmd vimrc Filetype c nnoremap <buffer> <localleader>r :w<cr>:execute printf('!gcc -o %s %s; ./%s', expand('%:r'), expand('%'), expand('%:r'))<cr>
+	autocmd vimrc Filetype c nnoremap <buffer> <localleader>b :w<cr>:execute printf('!gdb %s', expand('%:r'))<cr>
+	autocmd vimrc Filetype c nnoremap <buffer> <localleader>m :w<cr>:execute '!make && ./driver'<cr>
 endif
 " }}}
 
@@ -364,6 +364,7 @@ endif
 " AUTOCOMPLETES {{{
 iabbrev @! usama8800@gmail.com
 iabbrev @@ usama@bu.edu
+inoremap <c-space> <c-p>
 " expand f to find so we can do :f <filename>
 cabbrev f find
 " snippets

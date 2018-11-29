@@ -9,4 +9,5 @@
 .vim/bookmarks.txt
 .vim/tags
 .vim/.netrwbook
+.vim/.netrwhist
 

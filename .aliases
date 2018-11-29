@@ -42,8 +42,9 @@ else # macOS `ls`
 fi
 
 alias ll="ls -lF ${colorflag}" # List all files long format
-alias la="ls -A ${colorflag}" # List all files, including dot files
-alias lsd="ls -d ${colorflag}" # List only directories
+alias la="ls -A ${colorflag}" # List all files
+alias lla="ls -A ${colorflag} -lF" # List all files long format
+alias ld="ls -d ${colorflag}" # List only directories
 
 # Always use color output for `ls`
 alias ls="command ls ${colorflag}"
