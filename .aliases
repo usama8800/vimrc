@@ -22,15 +22,14 @@ alias g="git"
 alias push="git push"
 alias fetch="git fetch"
 alias pull="git pull"
-alias commit="git add *;git commit"
+alias commit="git commit"
+alias status="git status"
+alias s="git status"
 
 # programs
 alias ranger="~/Programs/ranger/ranger.py"
 alias r="~/Programs/ranger/ranger.py"
-
-
-
-
+alias shellcheck="~/Programs/shellcheck/shellcheck"
 
 # Detect which `ls` flavor is in use
 if ls --color > /dev/null 2>&1; then # GNU `ls`
