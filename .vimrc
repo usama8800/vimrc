@@ -69,9 +69,6 @@ Plug 'tpope/vim-surround'             " Surroind text in stuff
 " Plug 'adelarsq/vim-matchit'           " Use % to go to matching xml tag
 " Plug 'ludovicchabant/vim-gutentags'
 Plug 'mbbill/undotree'                " F5 for undo tree
-if v:version > 740
-	Plug 'Valloric/YouCompleteMe'
-endif
 " Plug 'Valloric/MatchTagAlways'        " Highlight xml matching tag
 " Plug 'honza/vim-snippets'
 Plug 'godlygeek/tabular'              " Nicely tabularize stuff
@@ -97,10 +94,9 @@ function! CustomVimEnter()
 endfunction
 function! AddDirectory(path)
 	execute 'tabnew '.g:vimfolder.'/bookmarks.txt'
-endif
-execute "normal! Go" . a:path
-w!
-tabclose
+	execute "normal! Go" . a:path
+	w!
+	tabclose
 endfunction
 function! RegexEscape(string)
 	return substitute(a:string, "\\\\", "\\\\\\\\", 'g')
@@ -328,7 +324,7 @@ autocmd vimrc Filetype netrw nmap <buffer> h -
 autocmd vimrc Filetype tex nnoremap <buffer> <localleader>t a{\Huge Todo}<esc>
 autocmd vimrc Filetype tex nnoremap <buffer> <localleader>i a\noindent<esc>
 autocmd vimrc Filetype tex nnoremap <buffer> <localleader>s a\textbf{Solution.}<esc>
-autocmd vimrc Filetype tex nnoremap <buffer> <localleader>p a\textbf{Proof.}<esc>
+autocmd vimrc Filetype tex nnoremap <buffer> <localleader>r a\textbf{Proof.}<esc>
 autocmd vimrc Filetype tex vmap <buffer> <localleader>b S}i\textbfjk
 autocmd vimrc Filetype tex vmap <buffer> <localleader>e S}i\textemjk
 autocmd vimrc Filetype tex vmap <buffer> <localleader>e S}i\textemjk
@@ -342,20 +338,24 @@ endif
 " <C-z> to run filetypes
 nnoremap <C-z> :w
 if has('win32')
-	autocmd vimrc Filetype python nnoremap <buffer> <localleader>r :w<cr>:!start cmd /k python % && exit<cr>
-	autocmd vimrc Filetype typescript nnoremap <buffer> <localleader>r :w<cr>:execute "!start cmd /k cd " . getcwd() . " & ng serve -o & pause"<cr>
-	autocmd vimrc Filetype tex nnoremap <buffer> <localleader>r :w<cr>:execute printf('!start cmd /c pdflatex --shell-escape "%s" && chrome.exe "%s.pdf"', expand('%'), expand('%:p:r'))<cr>
-	autocmd vimrc Filetype tex nnoremap <buffer> <localleader><localleader>r :w<cr>:execute printf('!start cmd /c pdflatex --shell-escape "%s" && chrome.exe "%s.pdf" && pause', expand('%:p'), expand('%:p:r'))<cr>
-	autocmd vimrc Filetype markdown nnoremap <buffer> <silent> <localleader>r :w<cr>:execute "!start ".expand('%')<cr>
+	autocmd vimrc Filetype python nnoremap <buffer> <localleader>p :w<cr>:!start cmd /k python % && exit<cr>
+	autocmd vimrc Filetype python nnoremap <buffer> <localleader>l :w<cr>:!start cmd /k python -i %<cr>
+	autocmd vimrc Filetype typescript nnoremap <buffer> <localleader>p :w<cr>:execute "!start cmd /k cd " . getcwd() . " & ng serve -o & pause"<cr>
+	autocmd vimrc Filetype tex nnoremap <buffer> <localleader>p :w<cr>:execute printf('!start cmd /c pdflatex --shell-escape "%s" && chrome.exe "%s.pdf"', expand('%'), expand('%:p:r'))<cr>
+	autocmd vimrc Filetype tex nnoremap <buffer> <localleader>l :w<cr>:execute printf('!start cmd /c pdflatex --shell-escape "%s" && chrome.exe "%s.pdf" && pause', expand('%:p'), expand('%:p:r'))<cr>
+	autocmd vimrc Filetype markdown nnoremap <buffer> <silent> <localleader>p :w<cr>:execute "!start ".expand('%')<cr>
 	command! -nargs=* GCC execute printf('!start cmd /c gcc %s.c %s -o %s.exe', expand('%:r'), "<args>", expand('%:r'))
-	autocmd vimrc Filetype c nnoremap <buffer> <localleader>r :w<cr>:execute printf('!start cmd /c gcc %s.c -o %s.exe && %s.exe && echo. & echo. && pause',expand('%:r'), expand('%:r'),  expand('%:r'))<cr>
-	autocmd vimrc Filetype c nnoremap <buffer> <localleader>b :w<cr>:execute printf('!start cmd /c gdb32 %s.exe', expand('%:r'))<cr>
+	autocmd vimrc Filetype haskell nnoremap <buffer> <localleader>p :w<cr>:!ghc %<cr>
+	autocmd vimrc Filetype haskell nnoremap <buffer> <localleader>l :w<cr>:!ghci %<cr>
+	autocmd vimrc Filetype haskell nnoremap <buffer> <localleader>m :w<cr>:!cabal new-repl<cr>
+	autocmd vimrc Filetype c nnoremap <buffer> <localleader>p :w<cr>:execute printf('!start cmd /c gcc %s.c -o %s.exe && %s.exe && echo. & echo. && pause',expand('%:r'), expand('%:r'),  expand('%:r'))<cr>
+	autocmd vimrc Filetype c nnoremap <buffer> <localleader>l :w<cr>:execute printf('!start cmd /c gdb32 %s.exe', expand('%:r'))<cr>
 else
-	autocmd vimrc Filetype python nnoremap <buffer> <localleader>r :w<cr>:!python %<cr>
-	autocmd vimrc Filetype tex nnoremap <buffer> <localleader>r :w<cr>:execute printf('!pdflatex --shell-escape %s; chrome.exe "%s.pdf"', expand('%'), expand('%:p:r'))<cr>
+	autocmd vimrc Filetype python nnoremap <buffer> <localleader>p :w<cr>:!python %<cr>
+	autocmd vimrc Filetype tex nnoremap <buffer> <localleader>p :w<cr>:execute printf('!pdflatex --shell-escape %s; chrome.exe "%s.pdf"', expand('%'), expand('%:p:r'))<cr>
 	command! -nargs=* GCC execute printf('!gcc %s -o %s %s', "<args>", expand('%:r'), expand('%'))
-	autocmd vimrc Filetype c nnoremap <buffer> <localleader>r :w<cr>:execute printf('!gcc -o %s %s; ./%s', expand('%:r'), expand('%'), expand('%:r'))<cr>
-	autocmd vimrc Filetype c nnoremap <buffer> <localleader>b :w<cr>:execute printf('!gdb %s', expand('%:r'))<cr>
+	autocmd vimrc Filetype c nnoremap <buffer> <localleader>p :w<cr>:execute printf('!gcc -o %s %s; ./%s', expand('%:r'), expand('%'), expand('%:r'))<cr>
+	autocmd vimrc Filetype c nnoremap <buffer> <localleader>d :w<cr>:execute printf('!gdb %s', expand('%:r'))<cr>
 	autocmd vimrc Filetype c nnoremap <buffer> <localleader>m :w<cr>:execute '!make && ./driver'<cr>
 endif
 " }}}
@@ -408,6 +408,7 @@ nnoremap <leader>; :<up>
 vnoremap <leader>; :<up>
 nnoremap x "_x
 nnoremap <leader>x x
+nnoremap cc ciw
 nnoremap // :let @/=""<cr>:echo "Search cleared"<cr>
 nnoremap <leader>/ :Commentary<cr>j
 vnoremap <leader>/ :Commentary<cr>
