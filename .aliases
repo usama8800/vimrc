@@ -11,6 +11,7 @@ alias d="cd ~/Documents;la"
 alias p="cd ~/Programs;la"
 alias dot="cd ~/Documents/dotfiles;la"
 alias 210="cd ~/Documents/210;la"
+alias csa="ssh usama@csa2.bu.edu"
 
 alias sb="source ~/.bashrc"
 alias cls="clear"
