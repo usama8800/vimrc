@@ -10,16 +10,15 @@ alias .....="cd ../../../.."
 alias d="cd ~/Documents;la"
 alias p="cd ~/Programs;la"
 alias dot="cd ~/Documents/dotfiles;la"
-alias 210="cd ~/Documents/210;la"
 alias csa="ssh usama@csa2.bu.edu"
 
 alias sb="source ~/.bashrc"
 alias cls="clear"
 alias :q="exit"
 alias untar="tar xvf"
+alias diff="git diff"
 
 # git commands
-alias g="git"
 alias push="git push"
 alias fetch="git fetch"
 alias pull="git pull"
