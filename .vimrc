@@ -46,7 +46,7 @@ set wildignore+=*/bin/*
 set wildignore+=*.spec.*
 set wildignore+=desktop.ini
 
-" Resert autocmd group
+" Reset autocmd group
 " Will be used to add all autocmds throughout
 augroup vimrc
 	autocmd!
@@ -452,4 +452,3 @@ function! GrepOperator(type)
 	let @@ = saved_unnamed_register
 endfunction
 " }}}
-
