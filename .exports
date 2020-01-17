@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+export PATH=$PATH:~/Documents/dotfiles/
+
 # Make vim the default editor.
 export EDITOR='vim';
 

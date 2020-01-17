@@ -1,0 +1,8 @@
+IFS=
+pattern=$1
+shift 1
+for i in $@; do
+	x=$(pdftotext "$i" - | grep -i "$pattern")
+	# echo -e $(echo "$x" | sed -nE "s/^(.)/\\\e[94m$i\\\e[0m: \1/p")
+	echo -e "\e[94m$i\e[0m: $x"
+done | grep -i --color=always "$pattern"
