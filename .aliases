@@ -9,9 +9,8 @@ alias .....="cd ../../../.."
 # Shortcuts
 alias doc="cd ~/Documents;la"
 alias down="cd ~/Downloads;la"
-alias p="cd ~/Programs;la"
 alias dot="cd ~/Documents/dotfiles;la"
-alias csa="ssh usama@csa2.bu.edu"
+alias csa="ssh -X usama@csa2.bu.edu"
 
 alias sb="source ~/.bashrc"
 alias cls="clear"
@@ -26,11 +25,6 @@ alias pull="git pull"
 alias commit="git commit"
 alias status="git status"
 alias s="git status"
-
-# programs
-alias ranger="~/Programs/ranger/ranger.py"
-alias r="~/Programs/ranger/ranger.py"
-alias shellcheck="~/Programs/shellcheck/shellcheck"
 
 # Detect which `ls` flavor is in use
 if ls --color > /dev/null 2>&1; then # GNU `ls`
@@ -57,7 +51,4 @@ alias egrep='egrep --color=auto'
 
 # Enable aliases to be sudo’ed
 alias sudo='sudo '
-
-# Get week number
-alias week='date +%V'
 

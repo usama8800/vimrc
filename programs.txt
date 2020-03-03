@@ -1,0 +1,5 @@
+ranger
+htop
+toilet
+lolcat
+shellcheck
