@@ -45,6 +45,8 @@ set wildignore+=*/.git/*
 set wildignore+=*/bin/*
 set wildignore+=*.spec.*
 set wildignore+=desktop.ini
+set fileformat=unix
+set fileformats=unix,dos
 
 " Reset autocmd group
 " Will be used to add all autocmds throughout

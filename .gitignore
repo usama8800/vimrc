@@ -11,4 +11,4 @@
 .vim/.netrwbook
 .vim/.netrwhist
 .extra
-
+.vim/autoload/plug.vim
