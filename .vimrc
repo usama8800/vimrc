@@ -208,6 +208,9 @@ nnoremap <leader><C-w> <C-w>
 nnoremap <leader>ee :e .<cr>
 " List buffers and get ready to enter a buffer number
 nnoremap <leader>bb :buffers<cr>:b<space>
+nnoremap <leader>bd :bdelete<cr>
+nnoremap <Tab> :bnext<cr>
+nnoremap <S-Tab> :bprev<cr>
 " Change window with CTRL-[H,J,K,L]
 noremap <C-l> <C-w>l
 noremap <C-h> <C-w>h
