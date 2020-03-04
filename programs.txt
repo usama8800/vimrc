@@ -3,3 +3,5 @@ htop
 toilet
 lolcat
 shellcheck
+git bash-completion
+
