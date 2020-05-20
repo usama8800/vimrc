@@ -268,6 +268,7 @@ autocmd vimrc BufNewFile,BufRead *.css,*.html,*.htm :ColorHighlight! " Auto Colo
 set showtabline=2 " Always show tabline
 let g:airline#extensions#tabline#enabled = 1               " Let airline take over tabline
 let g:airline#extensions#tabline#formatter = 'unique_tail' " tabline names only contain filenames
+let g:airline#extensions#tabline#buffer_nr_show = 1
 let g:airline_powerline_fonts = 1                          " Use nice powerline symbols for airline
 let g:airline_detect_modified=1
 let g:airline_detect_paste=1
