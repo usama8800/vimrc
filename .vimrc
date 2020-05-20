@@ -57,10 +57,18 @@ augroup END
 
 
 " PLUGINS {{{
-if empty(glob('~/.vim/autoload/plug.vim'))
-	silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
-				\ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-	autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+if has('win32')
+	if empty(glob("$HOME/vimfiles/autoload/plug.vim"))
+		silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
+					\ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+		autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+	endif
+else
+	if empty(glob("$HOME/.vim/autoload/plug.vim"))
+		silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
+					\ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+		autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+	endif
 endif
 call plug#begin(g:vimfolder.'/plugged')
 Plug 'vim-airline/vim-airline'        " Nice status line
@@ -361,7 +369,7 @@ if has('win32')
 	autocmd vimrc Filetype c nnoremap <buffer> <localleader>p :w<cr>:execute printf('!start cmd /c gcc %s.c -o %s.exe && %s.exe && echo. & echo. && pause',expand('%:r'), expand('%:r'),  expand('%:r'))<cr>
 	autocmd vimrc Filetype c nnoremap <buffer> <localleader>l :w<cr>:execute printf('!start cmd /c gdb32 %s.exe', expand('%:r'))<cr>
 else
-	autocmd vimrc Filetype python nnoremap <buffer> <localleader>p :w<cr>:!python %<cr>
+	autocmd vimrc Filetype python nnoremap <buffer> <localleader>p :w<cr>:!python3 %<cr>
 	autocmd vimrc Filetype tex nnoremap <buffer> <localleader>p :w<cr>:execute printf('!pdflatex --shell-escape %s; chrome.exe "%s.pdf"', expand('%'), expand('%:p:r'))<cr>
 	command! -nargs=* GCC execute printf('!gcc %s -o %s %s', "<args>", expand('%:r'), expand('%'))
 	autocmd vimrc Filetype c nnoremap <buffer> <localleader>p :w<cr>:execute printf('!gcc -o %s %s; ./%s', expand('%:r'), expand('%'), expand('%:r'))<cr>
